@@ -77,7 +77,7 @@ module {
             bytes_read += buffer.fill(iter);
             if (buffer.isFull()) {
                 // buffer is full, going to hash one block and try again
-                block(buffer.toArray());
+                block(buffer.toArray(#fwd));
                 buffer.reset();
                 continue reading
             } else {

@@ -10,7 +10,7 @@ let
   -- This is where you can add your own packages to the package-set
   additions = [
        { name = "iterext"
-        , version = "v1.0.0"
+        , version = "v2.0.0"
         , repo = "https://github.com/timohanke/motoko-iterext.git"
         , dependencies = [ "base" ] : List Text
         }
