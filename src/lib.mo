@@ -229,7 +229,7 @@ module {
             Nat8.fromIntWrap(Nat64.toNat(n))
         };
         let ith_byte = func(i : Nat) : Nat8 {
-            let shift = 8 * (7 - i);
+            let shift : Nat = 8 * (7 - i);
             mod8(n >> Nat64.fromNat(shift))
         };
         Array.tabulate<Nat8>(8, ith_byte)
@@ -240,7 +240,7 @@ module {
             Nat8.fromIntWrap(Nat32.toNat(n))
         };
         let ith_byte = func(i : Nat) : Nat8 {
-            let shift = 8 * (3 - i);
+            let shift : Nat = 8 * (3 - i);
             mod8(n >> Nat32.fromNat(shift))
         };
         Array.tabulate<Nat8>(4, ith_byte)
@@ -252,7 +252,7 @@ module {
 
       // write padding
       let t = len % 64;
-      let m = if (56 > t) (56 - t) else (120 - t);
+      let m : Nat = if (56 > t) (56 - t) else (120 - t);
       let padding = Array.tabulate<Nat8>(m, func(i) { if (i==0) 0x80 else 0 });
       let _ = write(padding.vals());
 
