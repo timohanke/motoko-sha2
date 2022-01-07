@@ -51,7 +51,7 @@ module {
     // Calculate a SHA256 hash from Iter.
     public func sha256(iter : Iter.Iter<Nat8>) : Blob {
         let digest = Digest(#sha256);
-        let _ = digest.write(iter);
+        ignore digest.write(iter);
         return digest.sum();
     };
 
@@ -67,7 +67,7 @@ module {
     public class Digest(algo: Algorithm) {
         let (word_length, state_words, block_bytes, rounds, sum_words, iv) = 
             switch (algo) {
-                case (#sha224) {
+                case (#sha224) { 
                     (#single, 8, 64, 64, 7, IV_224 : [Nat32]); 
                 };
                 case (_) { // assume sha256 for all unimplemented ones 
@@ -176,7 +176,7 @@ module {
                 Nat32.fromIntWrap(Nat8.toNat(data[39])) << 00;
             w[10] :=
                 Nat32.fromIntWrap(Nat8.toNat(data[40])) << 24 |
-               Nat32.fromIntWrap(Nat8.toNat(data[41])) << 16 |
+                Nat32.fromIntWrap(Nat8.toNat(data[41])) << 16 |
                 Nat32.fromIntWrap(Nat8.toNat(data[42])) << 08 |
                 Nat32.fromIntWrap(Nat8.toNat(data[43])) << 00;
             w[11] :=
@@ -206,10 +206,10 @@ module {
                 Nat32.fromIntWrap(Nat8.toNat(data[63])) << 00;
             // expand message
             for (i in expansion_rounds.keys()) {
-              let (v0, v1) = (w[i + 1], w[i + 14]);
-              let s0 = rot(v0, 07) ^ rot(v0, 18) ^ (v0 >> 03);
-              let s1 = rot(v1, 17) ^ rot(v1, 19) ^ (v1 >> 10);
-              w[i+16] := w[i] +% s0 +% w[i + 09] +% s1;
+                let (v0, v1) = (w[i + 1], w[i + 14]);
+                let s0 = rot(v0, 07) ^ rot(v0, 18) ^ (v0 >> 03);
+                let s1 = rot(v1, 17) ^ rot(v1, 19) ^ (v1 >> 10);
+                w[i+16] := w[i] +% s0 +% w[i + 09] +% s1;
             };
             // compress
             var a = state[0];
@@ -221,19 +221,19 @@ module {
             var g = state[6];
             var h = state[7];
             for (i in compression_rounds.keys()) {
-              let ch = (e & f) ^ (^ e & g);
-              let ma = (a & b) ^ (a & c) ^ (b & c);
-              let sigma0 = rot(a, 02) ^ rot(a, 13) ^ rot(a, 22);
-              let sigma1 = rot(e, 06) ^ rot(e, 11) ^ rot(e, 25);
-              let t = h +% K[i] +% w[i] +% ch +% sigma1;
-              h := g;
-              g := f;
-              f := e;
-              e := d +% t;
-              d := c;
-              c := b;
-              b := a;
-              a := t +% ma +% sigma0;
+                let ch = (e & f) ^ (^ e & g);
+                let ma = (a & b) ^ (a & c) ^ (b & c);
+                let sigma0 = rot(a, 02) ^ rot(a, 13) ^ rot(a, 22);
+                let sigma1 = rot(e, 06) ^ rot(e, 11) ^ rot(e, 25);
+                let t = h +% K[i] +% w[i] +% ch +% sigma1;
+                h := g;
+                g := f;
+                f := e;
+                e := d +% t;
+                d := c;
+                c := b;
+                b := a;
+                a := t +% ma +% sigma0;
             };
             // final addition
             state[0] +%= a;
@@ -276,10 +276,10 @@ module {
             let t = len % 64;
             let m : Nat = if (56 > t) (56 - t) else (120 - t);
             let padding = Array.tabulate<Nat8>(m, func(i) { if (i==0) 0x80 else 0 });
-            let _ = write(padding.vals());
+            ignore write(padding.vals());
 
             // write length
-            let _ = write(bigendian_nat64(n*8).vals());
+            ignore write(bigendian_nat64(n*8).vals());
 
             // retrieve sum
             let hash = Buffer.Buffer<Nat8>(32);
